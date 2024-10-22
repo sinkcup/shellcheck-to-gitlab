@@ -1,0 +1,14 @@
+image: ubuntu
+
+stages:
+  - lint
+
+shellcheck:
+  stage: lint
+  script:
+    - apt-get install -y shellcheck jq
+    - shellcheck *.sh -f json > shellcheck-report.json || true
+    - jq -f shellcheck2gitlab.jq shellcheck-report.json > gl-code-quality-report.json
+  artifacts:
+    reports:
+      codequality: gl-code-quality-report.json
